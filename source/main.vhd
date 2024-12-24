@@ -75,7 +75,7 @@ architecture a_main of main is
     signal ulaOp : unsigned(3 downto 0);
     signal sUlaB, r0Address, wrAddress : unsigned(2 downto 0);
     signal romOut : unsigned(18 downto 0);
-    signal IFinst, IDinst, IDinstIn, EXinst, EXinstIN, MEMinst, MEMinstIn, WBinst : unsigned(70 downto 0);
+    signal IDinst, IDinstIn, EXinst, EXinstIN, MEMinst, MEMinstIn, WBinst : unsigned(70 downto 0);
 begin
     ulat : ULA port map(
         dataInA => ulaA,
@@ -93,7 +93,7 @@ begin
         wrData => wrtData,
         wrAddress => wrAddress,
         r0Address => r0Address,
-        r1Address => IFinst(8 downto 6),
+        r1Address => IDinst(8 downto 6),
         r0Data => r0,
         r1Data => r1
     );
@@ -106,7 +106,7 @@ begin
     cU : controlUnit port map(
         clk => clk,
         rst => rst,
-        instruction => IFinst(18 downto 12),
+        instruction => IDinst(18 downto 12),
         pcWrtEn => pcWrtEn,
         pcWrtCnd => pcWrtCnd,
         pcSource => pcSource,
@@ -155,7 +155,7 @@ begin
         dataOut => MEMinst
     );
     MEMinstIn <= "00000000000000000000000000000" & (IDinst(22 downto 7) + IDinst(38 downto 23)) & v & n & z & ulaOut & EXinst(6 downto 0);
-    wrAddress <= IFinst(11 downto 9);
+    wrAddress <= IDinst(11 downto 9);
     -- MUX
     romAddr <= pcOut;
 
@@ -176,8 +176,8 @@ begin
 
     wrtData <= ulaOut when memtoReg = '0' else
         (others => '0');
-    -- and not excp:
-    pcWrt <= (pcWrtEn or pcWrtCnd);
+
+    pcWrt <= (pcWrtEn or pcWrtCnd) and not excp;
     -- IMM GEN
     -- dps ver se vai colocar o decode na cu
     -- define qual é o tamanho da constante a ser extraída da instrução

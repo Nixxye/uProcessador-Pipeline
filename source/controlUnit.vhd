@@ -49,8 +49,8 @@ begin
     regWrt <= '0';
     lorD <= "00";
     -- DECODE:
-    opcode <= instruction (6 downto 3);
-    func <= instruction (2 downto 0);
+    opcode <= instruction (3 downto 0);
+    func <= instruction (6 downto 4);
     -- INSTRUÇÕES PERMITIDAS
     excp <= '0' when opcode = "0000" and func = "000" else --nop
         '0' when instrJ = '1' and func = "000" else -- jmp

@@ -18,6 +18,7 @@ begin
         datainA - dataInB when opSelect = "001" else
         datainA and datainB when opSelect = "010" else
         datainA or datainB when opSelect = "100" else
+        datainB when opSelect = "101" else -- retirar no futuro
         (others => '0');
     -- FLAGS
     z <= '1' when opResult = 0 else '0';

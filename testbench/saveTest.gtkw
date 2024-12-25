@@ -1,36 +1,36 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Tue Dec 24 22:54:09 2024
+[*] Wed Dec 25 17:02:36 2024
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Tue Dec 24 22:53:30 2024"
-[dumpfile_size] 13046
+[dumpfile_mtime] "Wed Dec 25 17:01:32 2024"
+[dumpfile_size] 22579
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
 [timestart] 0
 [size] 2560 980
-[pos] -1249 4
-*-25.506411 125000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -90 -22
+*-27.469748 482300000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
+[treeopen] tb.uut.regfile.
 [sst_width] 276
-[signals_width] 158
+[signals_width] 231
 [sst_expanded] 1
-[sst_vpaned_height] 532
+[sst_vpaned_height] 630
 @22
 tb.uut.pcreg.dataout[15:0]
 @28
 tb.rst
 tb.clk
+tb.uut.excp
 @22
+tb.uut.regfile.rs0[15:0]
+tb.uut.regfile.rs1[15:0]
+tb.uut.regfile.rs2[15:0]
+tb.uut.regfile.rs3[15:0]
+tb.uut.regfile.rs4[15:0]
 tb.uut.pcreg.datain[15:0]
 @28
 tb.uut.pcreg.wren
-tb.uut.cu.excp
-@22
-tb.uut.cu.opcode[3:0]
-@28
-tb.uut.cu.func[2:0]
-@23
-tb.uut.cu.instruction[6:0]
 [pattern_trace] 1
 [pattern_trace] 0

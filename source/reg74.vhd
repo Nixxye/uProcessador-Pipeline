@@ -2,18 +2,18 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity reg71 is 
+entity reg74 is 
     port(
         clk : in std_logic;
         rst : in std_logic;
         wrEn : in std_logic;
-        dataIn : in unsigned(70 downto 0);
-        dataOut : out unsigned(70 downto 0)
+        dataIn : in unsigned(73 downto 0);
+        dataOut : out unsigned(73 downto 0)
     );
 end entity;
 
-architecture a_reg71 of reg71 is
-    signal reg : unsigned(70 downto 0);
+architecture a_reg74 of reg74 is
+    signal reg : unsigned(73 downto 0);
 begin
     process(clk, rst, wrEn)
     begin

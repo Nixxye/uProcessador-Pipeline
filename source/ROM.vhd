@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 entity ROM is
     port (
-        clk : in std_logic;
+        clk, rst : in std_logic;
         address : in unsigned(15 downto 0);
         data : out unsigned(18 downto 0) -- Instruções de 19 bits
     );
@@ -23,7 +23,9 @@ architecture a_ROM of ROM is
 begin
     process(clk)
     begin
-        if rising_edge(clk) then
+        if rst = '1' then
+            data <= (others => '0');
+        elsif rising_edge(clk) then
             data <= romContent(to_integer(unsigned(address)));
         end if;
     end process;

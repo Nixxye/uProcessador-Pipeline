@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Wed Dec 25 17:02:36 2024
+[*] Wed Dec 25 19:40:14 2024
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Wed Dec 25 17:01:32 2024"
-[dumpfile_size] 22579
+[dumpfile_mtime] "Wed Dec 25 19:37:37 2024"
+[dumpfile_size] 102110
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
 [timestart] 0
-[size] 2560 980
-[pos] -90 -22
-*-27.469748 482300000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1270 970
+[pos] -951 -103
+*-26.731661 153700000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
 [sst_width] 276
-[signals_width] 231
+[signals_width] 303
 [sst_expanded] 1
-[sst_vpaned_height] 630
+[sst_vpaned_height] 622
 @22
 tb.uut.pcreg.dataout[15:0]
 @28
@@ -28,9 +28,37 @@ tb.uut.regfile.rs0[15:0]
 tb.uut.regfile.rs1[15:0]
 tb.uut.regfile.rs2[15:0]
 tb.uut.regfile.rs3[15:0]
+@c00022
 tb.uut.regfile.rs4[15:0]
-tb.uut.pcreg.datain[15:0]
+@28
+(0)tb.uut.regfile.rs4[15:0]
+(1)tb.uut.regfile.rs4[15:0]
+(2)tb.uut.regfile.rs4[15:0]
+(3)tb.uut.regfile.rs4[15:0]
+(4)tb.uut.regfile.rs4[15:0]
+(5)tb.uut.regfile.rs4[15:0]
+(6)tb.uut.regfile.rs4[15:0]
+(7)tb.uut.regfile.rs4[15:0]
+(8)tb.uut.regfile.rs4[15:0]
+(9)tb.uut.regfile.rs4[15:0]
+(10)tb.uut.regfile.rs4[15:0]
+(11)tb.uut.regfile.rs4[15:0]
+(12)tb.uut.regfile.rs4[15:0]
+(13)tb.uut.regfile.rs4[15:0]
+(14)tb.uut.regfile.rs4[15:0]
+(15)tb.uut.regfile.rs4[15:0]
+@1401200
+-group_end
 @28
 tb.uut.pcreg.wren
+@24
+tb.uut.regfile.wraddress[2:0]
+tb.uut.regfile.wrdata[15:0]
+@28
+tb.uut.regfile.wraddress[2:0]
+@22
+tb.uut.regfile.wrdata[15:0]
+@29
+tb.uut.regfile.wren
 [pattern_trace] 1
 [pattern_trace] 0

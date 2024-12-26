@@ -70,8 +70,8 @@ architecture a_main of main is
         );
     end component;
     signal imm, ulaA, ulaB, r0, r1, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr, pcMem: unsigned(15 downto 0);
-    signal instrB, instrJ, instrI, pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, pcSource, zeroReg, regWrt, rstPc, irWrt, z, n, v : std_logic;
-    signal lorD, memtoReg : unsigned(1 downto 0);
+    signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, zeroReg, regWrt, rstPc, irWrt, z, n, v : std_logic;
+    signal lorD, memtoReg, pcSource : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
     signal sUlaB, r0Address, wrAddress : unsigned(2 downto 0);
     signal romOut : unsigned(18 downto 0);
@@ -111,19 +111,28 @@ begin
         address => pcOut,
         data => romOut
     );
-    pcIn <= pcOut + 1 when pcSource = '0' else
+    pcIn <= pcOut + 1 when pcSource = "00" else
+        "0000" & romOut(18 downto 7) when pcSource = "01" and romOut(18) = '0' else -- imm (jmp)
+        -- "1111" & romOut(18 downto 7) when pcSource = "01" and romOut(18) = '1' else -- sem extensão de sinal negativo aqui
+        IDinst(34 downto 19) + imm when pcSource = "10" else -- pc + imm (ble e blt)
         (others => '0');
     -- romAddr <= pcOut;
+    -- Adianta o pulo:
+    pcSource <= "01" when romOut(3 downto 0) = "0001" and romOut(6 downto 4) = "000" else -- jmp
+        "10" when romOut(3 downto 0) = "0100" and romOut(6 downto 4) = "000" else -- ble
+        "10" when romOut(3 downto 0) = "0100" and romOut(6 downto 4) = "001" else -- blt
+        "00"; 
     pcWrt <= not excp;
     -------------------------
     IF_ID : reg77 port map(
         clk => clk,
-        rst => rst,
+        rst => rstIF_ID,
         wrEn => '1',
         dataIn => IDinstIn,
         dataOut => IDinst
     );
     IDinstIn <= "000000000000000000000000000000000000000000" & pcMem & romOut;
+    rstIF_ID <= rst or stall;
     -- INSTRUCTION DECODE
     regFile : registerFile port map(
         clk => clk,
@@ -163,6 +172,8 @@ begin
         "0000000" & IDinst(18 downto 10) when IDinst(18) = '0' and instrI = '1' else
         "1111111" & IDinst(18 downto 10) when IDinst(18) = '1' and instrI = '1' else
         (others => '0');
+
+
     -------------------------
     ID_EX : reg77 port map(
             clk => clk,
@@ -193,6 +204,9 @@ begin
         "0001" when opcodeEX = "0010" and functEX = "001" else -- sub
         "0000" when opcodeEX = "0011" and functEX = "000" else -- addi
         (others => '0');
+    -- STALLS
+    stall <= '1' when opcodeEX = "0001" and functEX = "000" else -- jump
+        '0';
     -------------------------
     EX_MEM : reg77 port map(
         clk => clk,
@@ -203,7 +217,6 @@ begin
     );
     MEMinstIn <= EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & EXinst(38 downto 23) & v & n & z & EXinst(70 downto 55) & ulaOut & EXinst(6 downto 0);
     -- MEMORY  
-    pcSource <= '0'; 
     -------------------------
     MEM_WB : reg77 port map(
         clk => clk,

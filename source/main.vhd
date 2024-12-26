@@ -69,7 +69,7 @@ architecture a_main of main is
             lorD : out unsigned(1 downto 0)
         );
     end component;
-    signal imm, ulaA, ulaB, r0, r1, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr, pcMem: unsigned(15 downto 0);
+    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr, pcMem: unsigned(15 downto 0);
     signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmp, excp, zeroReg, regWrt, rstPc, irWrt, z, n, v : std_logic;
     signal lorD, memtoReg, pcSource : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
@@ -176,6 +176,13 @@ begin
     -- STALLS (reset do registrador depende de clock)
     stall <= '1' when opcodeID = "0001" and functID = "000" else -- jump
         '0';
+    -- FORWARDING
+    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) else -- Estado EXECUTE
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) else -- Estado MEMORY
+        r1;
+    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) else -- Estado EXECUTE
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) else -- Estado MEMORY
+        r0;
     -------------------------
     ID_EX : reg77 port map(
             clk => clk,
@@ -184,7 +191,7 @@ begin
             dataIn => EXinstIn,
             dataOut => EXinst
         );
-    EXinstIn <= "000" & IDinst(9 downto 7) & r1 & r0 & imm & IDinst (34 downto 19) & IDinst(6 downto 0);      
+    EXinstIn <= "000" & IDinst(9 downto 7) & r1Fwd & r0Fwd & imm & IDinst (34 downto 19) & IDinst(6 downto 0);      
     -- EXECUTE
     ulat : ULA port map(
         dataInA => ulaA,

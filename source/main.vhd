@@ -173,7 +173,9 @@ begin
         "1111111" & IDinst(18 downto 10) when IDinst(18) = '1' and instrI = '1' else
         (others => '0');
 
-
+    -- STALLS (reset do registrador depende de clock)
+    stall <= '1' when opcodeID = "0001" and functID = "000" else -- jump
+        '0';
     -------------------------
     ID_EX : reg77 port map(
             clk => clk,
@@ -204,9 +206,6 @@ begin
         "0001" when opcodeEX = "0010" and functEX = "001" else -- sub
         "0000" when opcodeEX = "0011" and functEX = "000" else -- addi
         (others => '0');
-    -- STALLS
-    stall <= '1' when opcodeEX = "0001" and functEX = "000" else -- jump
-        '0';
     -------------------------
     EX_MEM : reg77 port map(
         clk => clk,

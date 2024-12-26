@@ -17,10 +17,10 @@ architecture a_reg77 of reg77 is
 begin
     process(clk, rst, wrEn)
     begin
-        if rst = '1' then
-            reg <= (others => '0');
-        elsif wrEn = '1' then
-            if rising_edge(clk) then
+        if rising_edge(clk) then
+            if rst = '1' then
+                reg <= (others => '0');
+            elsif wrEn = '1' then
                 reg <= dataIn;
             end if;
         end if;

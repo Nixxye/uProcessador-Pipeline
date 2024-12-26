@@ -189,13 +189,9 @@ begin
         EXinst(38 downto 23) when opcodeEX = "0011" or opcodeEX = "0100" else -- imm para instruções do tipo I e B
         (others => '0');
     -- 0000 = add, 0001 = sub, 0010 = and, 0011 = or, 0101 = passa a entrada B para a saída
-    ulaOP <= "0000" when opcodeEX = "0000" and functEX = "000" else -- add
-        "0001" when opcodeEX = "0000" and functEX = "001" else -- sub
-        -- "0101" when opcodeEX = "0000" and functEX = "010" else -- move (n passa pela ula)
-        "0001" when opcodeEX = "0011" and functEX = "000" else -- addi
-        -- "0100" when opcodeEX = "0011" and functEX = "001" else -- ld (n passa pela ula)
-        -- "0101" when opcodeEX = "0100" and functEX = "000" else -- ble (n passa pela ula)
-        -- "0110" when opcodeEX = "0100" and functEX = "001" else -- blt (n passa pela ula)
+    ulaOP <= "0000" when opcodeEX = "0010" and functEX = "000" else -- add
+        "0001" when opcodeEX = "0010" and functEX = "001" else -- sub
+        "0000" when opcodeEX = "0011" and functEX = "000" else -- addi
         (others => '0');
     -------------------------
     EX_MEM : reg77 port map(
@@ -205,7 +201,7 @@ begin
         dataIn => MEMinstIn,
         dataOut => MEMinst
     );
-    MEMinstIn <= EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & EXinst(38 downto 23) & v & n & z & EXinst(54 downto 39) & ulaOut & EXinst(6 downto 0);
+    MEMinstIn <= EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & EXinst(38 downto 23) & v & n & z & EXinst(70 downto 55) & ulaOut & EXinst(6 downto 0);
     -- MEMORY  
     pcSource <= '0'; 
     -------------------------
@@ -219,11 +215,11 @@ begin
     WBinstIN <= MEMinst; -- por enquanto não existe RAM
     -- WRITE BACK     
     memtoReg <= "00" when opcodeWB = "0010" and functWB = "000" else -- add
-    "00" when opcodeWB = "0010" and functWB = "001" else -- sub
-    "00" when opcodeWB = "0011" and functWB = "000" else -- addi
-    "10" when opcodeWB = "0010" and functWB = "010" else -- move
-    "01" when opcodeWB = "0011" and functWB = "001" else -- ld
-    "00";
+        "00" when opcodeWB = "0010" and functWB = "001" else -- sub
+        "00" when opcodeWB = "0011" and functWB = "000" else -- addi
+        "10" when opcodeWB = "0010" and functWB = "010" else -- move
+        "01" when opcodeWB = "0011" and functWB = "001" else -- ld
+        "00";
     regWrt <= '1' when opcodeWB = "0010" and functWB = "000" else -- add
         '1' when opcodeWB = "0010" and functWB = "001" else -- sub
         '1' when opcodeWB = "0010" and functWB = "010" else -- move

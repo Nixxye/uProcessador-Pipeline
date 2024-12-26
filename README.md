@@ -1,7 +1,8 @@
 # uProcessador-Pipeline
 
 Projeto de um microprocessador desenvolvido por Jean Carlos do Nascimento Cunha para a disciplina de **Arquitetura e Organização de Computadores** sob a orientação do Professor **Juliano Mourão Vieira**.
-
+## Referência
+[Notion](https://resisted-timimus-fe1.notion.site/Pipeline-1662a778c47f80c79239ec9372a47a6a?pvs=4)
 ## Requisitos
 
 Para executar o projeto, você precisará de:

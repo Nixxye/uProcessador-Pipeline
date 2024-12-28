@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Sat Dec 28 14:54:48 2024
+[*] Sat Dec 28 17:06:48 2024
 [*]
 [dumpfile] "/mnt/c/Users/cjean/OneDrive/Documentos/GitHub/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Sat Dec 28 14:54:11 2024"
-[dumpfile_size] 577026
+[dumpfile_mtime] "Sat Dec 28 16:53:18 2024"
+[dumpfile_size] 589611
 [savefile] "/mnt/c/Users/cjean/OneDrive/Documentos/GitHub/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 7079000000
+[timestart] 0
 [size] 1920 984
-[pos] -558 -224
-*-27.931662 7916000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -623 -10
+*-27.931662 325000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
@@ -54,12 +54,12 @@ tb.clk
 tb.uut.excp
 @22
 tb.uut.regfile.rs0[15:0]
-tb.uut.regfile.rs1[15:0]
 @24
+tb.uut.regfile.rs1[15:0]
 tb.uut.regfile.rs2[15:0]
-@25
+@22
 tb.uut.regfile.rs3[15:0]
-@c00025
+@c00024
 tb.uut.regfile.rs4[15:0]
 @28
 (0)tb.uut.regfile.rs4[15:0]
@@ -78,7 +78,7 @@ tb.uut.regfile.rs4[15:0]
 (13)tb.uut.regfile.rs4[15:0]
 (14)tb.uut.regfile.rs4[15:0]
 (15)tb.uut.regfile.rs4[15:0]
-@1401205
+@1401200
 -group_end
 @22
 tb.uut.opcodeid[3:0]
@@ -109,6 +109,56 @@ tb.uut.meminst[76:0]
 (35)tb.uut.meminst[76:0]
 (36)tb.uut.meminst[76:0]
 (37)tb.uut.meminst[76:0]
+@1001200
+-group_end
+@22
+tb.uut.ulat.dataina[15:0]
+tb.uut.ulat.datainb[15:0]
+tb.uut.ulat.dataout[15:0]
+@28
+tb.uut.memtoreg[1:0]
+@c00022
+tb.uut.wbinst[76:0]
+@28
+(54)tb.uut.wbinst[76:0]
+(55)tb.uut.wbinst[76:0]
+(56)tb.uut.wbinst[76:0]
+(57)tb.uut.wbinst[76:0]
+(58)tb.uut.wbinst[76:0]
+(59)tb.uut.wbinst[76:0]
+(60)tb.uut.wbinst[76:0]
+(61)tb.uut.wbinst[76:0]
+(62)tb.uut.wbinst[76:0]
+(63)tb.uut.wbinst[76:0]
+(64)tb.uut.wbinst[76:0]
+(65)tb.uut.wbinst[76:0]
+(66)tb.uut.wbinst[76:0]
+(67)tb.uut.wbinst[76:0]
+(68)tb.uut.wbinst[76:0]
+(69)tb.uut.wbinst[76:0]
+@1401200
+-group_end
+@22
+tb.uut.meminstin[76:0]
+@800024
+tb.uut.exinst[76:0]
+@28
+(54)tb.uut.exinst[76:0]
+(55)tb.uut.exinst[76:0]
+(56)tb.uut.exinst[76:0]
+(57)tb.uut.exinst[76:0]
+(58)tb.uut.exinst[76:0]
+(59)tb.uut.exinst[76:0]
+(60)tb.uut.exinst[76:0]
+(61)tb.uut.exinst[76:0]
+(62)tb.uut.exinst[76:0]
+(63)tb.uut.exinst[76:0]
+(64)tb.uut.exinst[76:0]
+(65)tb.uut.exinst[76:0]
+(66)tb.uut.exinst[76:0]
+(67)tb.uut.exinst[76:0]
+(68)tb.uut.exinst[76:0]
+(69)tb.uut.exinst[76:0]
 @1001200
 -group_end
 [pattern_trace] 1

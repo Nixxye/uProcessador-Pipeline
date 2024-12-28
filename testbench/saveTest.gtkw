@@ -1,31 +1,51 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Thu Dec 26 21:07:47 2024
+[*] Sat Dec 28 14:54:48 2024
 [*]
-[dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Thu Dec 26 21:05:32 2024"
-[dumpfile_size] 113133
-[savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 0
-[size] 1362 970
-[pos] -1276 -23
-*-27.931662 866000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[dumpfile] "/mnt/c/Users/cjean/OneDrive/Documentos/GitHub/uProcessador-Pipeline/work/tb.vcd"
+[dumpfile_mtime] "Sat Dec 28 14:54:11 2024"
+[dumpfile_size] 577026
+[savefile] "/mnt/c/Users/cjean/OneDrive/Documentos/GitHub/uProcessador-Pipeline/testbench/saveTest.gtkw"
+[timestart] 7079000000
+[size] 1920 984
+[pos] -558 -224
+*-27.931662 7916000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
 [sst_width] 276
 [signals_width] 210
 [sst_expanded] 1
-[sst_vpaned_height] 622
-@24
+[sst_vpaned_height] 633
+@c00024
 tb.uut.pcmem[15:0]
 @28
-tb.uut.stall
+(0)tb.uut.pcmem[15:0]
+(1)tb.uut.pcmem[15:0]
+(2)tb.uut.pcmem[15:0]
+(3)tb.uut.pcmem[15:0]
+(4)tb.uut.pcmem[15:0]
+(5)tb.uut.pcmem[15:0]
+(6)tb.uut.pcmem[15:0]
+(7)tb.uut.pcmem[15:0]
+(8)tb.uut.pcmem[15:0]
+(9)tb.uut.pcmem[15:0]
+(10)tb.uut.pcmem[15:0]
+(11)tb.uut.pcmem[15:0]
+(12)tb.uut.pcmem[15:0]
+(13)tb.uut.pcmem[15:0]
+(14)tb.uut.pcmem[15:0]
+(15)tb.uut.pcmem[15:0]
+@1401200
+-group_end
+@28
 tb.uut.rstif_id
+tb.uut.jmpguess
+tb.uut.jmpreal
+tb.uut.stall
+tb.uut.flush
 @24
 tb.uut.pcreg.dataout[15:0]
-@28
-tb.uut.pcsource[1:0]
 @22
 tb.uut.pcin[15:0]
 @28
@@ -35,9 +55,11 @@ tb.uut.excp
 @22
 tb.uut.regfile.rs0[15:0]
 tb.uut.regfile.rs1[15:0]
+@24
 tb.uut.regfile.rs2[15:0]
+@25
 tb.uut.regfile.rs3[15:0]
-@c00022
+@c00025
 tb.uut.regfile.rs4[15:0]
 @28
 (0)tb.uut.regfile.rs4[15:0]
@@ -56,7 +78,7 @@ tb.uut.regfile.rs4[15:0]
 (13)tb.uut.regfile.rs4[15:0]
 (14)tb.uut.regfile.rs4[15:0]
 (15)tb.uut.regfile.rs4[15:0]
-@1401200
+@1401205
 -group_end
 @22
 tb.uut.opcodeid[3:0]
@@ -67,9 +89,9 @@ tb.uut.romout[18:0]
 @28
 tb.uut.if_id.wren
 tb.uut.if_id.rst
-@c00023
+@c00022
 tb.uut.idinst[76:0]
-@29
+@28
 (70)tb.uut.idinst[76:0]
 (71)tb.uut.idinst[76:0]
 (72)tb.uut.idinst[76:0]
@@ -77,9 +99,17 @@ tb.uut.idinst[76:0]
 (74)tb.uut.idinst[76:0]
 (75)tb.uut.idinst[76:0]
 (76)tb.uut.idinst[76:0]
-@1401201
+@1401200
 -group_end
 @22
 tb.uut.if_id.datain[76:0]
+@800022
+tb.uut.meminst[76:0]
+@28
+(35)tb.uut.meminst[76:0]
+(36)tb.uut.meminst[76:0]
+(37)tb.uut.meminst[76:0]
+@1001200
+-group_end
 [pattern_trace] 1
 [pattern_trace] 0

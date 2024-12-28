@@ -23,6 +23,5 @@ begin
     -- FLAGS
     z <= '1' when opResult = 0 else '0';
     n <= opResult(15);
-    v <= (dataInA(15) and dataInB(15) and not opResult(15))
-     or (not dataInA(15) and not dataInB(15) and opResult(15));
+    v <= '1' when (dataInA(15) /= dataInB(15)) and (dataInA(15) /= opResult(15)) else '0';
 end architecture;

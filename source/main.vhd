@@ -35,14 +35,6 @@ architecture a_main of main is
         );
     end component;
 
-    component reg19 is
-        port(
-            clk, rst, wrEn : in std_logic;
-            dataIn : in unsigned(18 downto 0);
-            dataOut : out unsigned(18 downto 0)
-        );
-    end component;
-
     component reg77 is
         port(
             clk, rst, wrEn : in std_logic;
@@ -59,21 +51,11 @@ architecture a_main of main is
     );
     end component;
 
-    component controlUnit is
-        port (
-            clk, rst, z, n, v : in std_logic;
-            instruction : in unsigned(6 downto 0); -- OPCODE (4 bits) + FUNCTION (3 bits)
-            pcWrtEn, pcWrtCnd, ulaSrcA, pcSource, opException, zeroReg, memtoReg, regWrt, irWrt: out std_logic;
-            ulaOp : out unsigned(3 downto 0); 
-            ulaSrcB : out unsigned(2 downto 0);
-            lorD : out unsigned(1 downto 0)
-        );
-    end component;
-    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, r0Ula, r1Ula, wrtData, ulaOut, ulaResult, romIn, pcIn, pcOut, romAddr, pcMem: unsigned(15 downto 0);
-    signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrtEn, pcWrtCnd, pcWrt, sUlaA, jmpGuess, jmpReal, excp, zeroReg, regWrt, rstPc, irWrt, z, n, v, flush, flushAux : std_logic;
-    signal lorD, memtoReg : unsigned(1 downto 0);
+    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, pcMem: unsigned(15 downto 0);
+    signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, z, n, v, flush, flushAux : std_logic;
+    signal memtoReg : unsigned(1 downto 0);
     signal ulaOp : unsigned(3 downto 0);
-    signal sUlaB, r0Address, wrAddress, pcSource : unsigned(2 downto 0);
+    signal r0Address, wrAddress, pcSource : unsigned(2 downto 0);
     signal romOut : unsigned(18 downto 0);
     signal IDinst, IDinstIn, EXinst, EXinstIN, MEMinst, WBinstIN, MEMinstIn, WBinst : unsigned(76 downto 0);
     -- opcodes de cada estado

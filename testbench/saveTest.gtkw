@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Mon Dec 30 19:28:25 2024
+[*] Mon Dec 30 21:33:13 2024
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Mon Dec 30 19:27:44 2024"
-[dumpfile_size] 596815
+[dumpfile_mtime] "Mon Dec 30 21:30:51 2024"
+[dumpfile_size] 499943
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 10435000000
+[timestart] 0
 [size] 1270 964
-[pos] -586 -122
-*-27.931662 10976000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1257 -127
+*-27.931662 606000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
@@ -20,9 +20,9 @@
 @28
 tb.clk
 tb.rst
-@c00025
+@c00024
 tb.uut.pcmem[15:0]
-@29
+@28
 (0)tb.uut.pcmem[15:0]
 (1)tb.uut.pcmem[15:0]
 (2)tb.uut.pcmem[15:0]
@@ -39,7 +39,7 @@ tb.uut.pcmem[15:0]
 (13)tb.uut.pcmem[15:0]
 (14)tb.uut.pcmem[15:0]
 (15)tb.uut.pcmem[15:0]
-@1401201
+@1401200
 -group_end
 @28
 tb.uut.rstif_id
@@ -91,6 +91,21 @@ tb.uut.wbinst[76:0]
 (74)tb.uut.wbinst[76:0]
 (75)tb.uut.wbinst[76:0]
 (76)tb.uut.wbinst[76:0]
+@1001200
+-group_end
+@22
+tb.uut.ramout[15:0]
+tb.uut.ularamselect[15:0]
+@800022
+tb.uut.meminst[76:0]
+@28
+(47)tb.uut.meminst[76:0]
+(48)tb.uut.meminst[76:0]
+(49)tb.uut.meminst[76:0]
+(50)tb.uut.meminst[76:0]
+(51)tb.uut.meminst[76:0]
+(52)tb.uut.meminst[76:0]
+(53)tb.uut.meminst[76:0]
 @1001200
 -group_end
 [pattern_trace] 1

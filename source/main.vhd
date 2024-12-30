@@ -44,23 +44,31 @@ architecture a_main of main is
     end component;
 
     component ROM is
-    port (
-        clk, rst : in std_logic;
-        address : in unsigned(15 downto 0);
-        data : out unsigned(18 downto 0) -- Instruções de 19 bits
-    );
+        port (
+            clk, rst : in std_logic;
+            address : in unsigned(15 downto 0);
+            data : out unsigned(18 downto 0) -- Instruções de 19 bits
+        );
     end component;
 
-    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, pcMem: unsigned(15 downto 0);
-    signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, z, n, v, flush, flushAux : std_logic;
-    signal memtoReg : unsigned(1 downto 0);
-    signal ulaOp : unsigned(3 downto 0);
-    signal r0Address, wrAddress, pcSource : unsigned(2 downto 0);
-    signal romOut : unsigned(18 downto 0);
+    component RAM is
+        port( 
+                clk      : in std_logic;
+                address : in unsigned(6 downto 0);
+                wrEn    : in std_logic;
+                dataIn  : in unsigned(15 downto 0);
+                dataOut : out unsigned(15 downto 0) 
+        );
+    end component;
+
     signal IDinst, IDinstIn, EXinst, EXinstIN, MEMinst, WBinstIN, MEMinstIn, WBinst : unsigned(76 downto 0);
+    signal romOut : unsigned(18 downto 0);
+    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, pcMem, ramOut, r0ImmSelect, ulaRamSelect : unsigned(15 downto 0);
     -- opcodes de cada estado
-    signal opcodeID, opcodeEX, opcodeMEM, opcodeWB : unsigned (3 downto 0);
-    signal functID, functEX, functMEM, functWB : unsigned (2 downto 0);
+    signal opcodeID, opcodeEX, opcodeMEM, opcodeWB, ulaOp : unsigned (3 downto 0);
+    signal r0Address, wrAddress, pcSource, functID, functEX, functMEM, functWB : unsigned(2 downto 0);
+    signal memtoReg : unsigned(1 downto 0);
+    signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, ramWrt, z, n, v, flush, flushAux : std_logic;
 begin
     -- CONTROLE DOS ESTADOS:
     opcodeID <= IDinst(3 downto 0);
@@ -100,7 +108,7 @@ begin
         pcOut + ("0000" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '0' else -- pc + delta
         pcOut + ("1111" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '1' else -- pc + delta
         (others => '0');
-    -- Chute do branch:
+    -- Chute do branch (ADD Branch Prediction aqui):
     jmpGuess <= '1';
     -- Adianta o pulo:
     pcSource <= "010" when flush = '1' and jmpReal = '1' else -- errou e tem que pular (pcAntigo + delta)
@@ -143,6 +151,8 @@ begin
         '0' when romOut(3 downto 0) = "0010" and romOut(6 downto 4) = "001" else -- sub
         '0' when romOut(3 downto 0) = "0010" and romOut(6 downto 4) = "011" else -- cmp
         '0' when romOut(3 downto 0) = "0010" and romOut(6 downto 4) = "010" else -- move
+        '0' when romOut(3 downto 0) = "0010" and romOut(6 downto 4) = "100" else -- lw
+        '0' when romOut(3 downto 0) = "0010" and romOut(6 downto 4) = "101" else -- sw
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "000" else -- addi
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "001" else -- ld
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "010" else -- cmpi
@@ -222,10 +232,25 @@ begin
         dataIn => MEMinstIn,
         dataOut => MEMinst
     );
-    -- Não altera as flags para instruções que não são de ULA: ld, jump, mov, bne e ble
-    MEMinstIn <= EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & EXinst(38 downto 23) & MEMinst(41 downto 39) & EXinst(70 downto 55) & ulaOut & EXinst(6 downto 0) when opcodeEX = "0001" or (opcodeEX = "0010" and functEX = "010") or (opcodeEX = "0011" and functEX = "001") or opcodeEX = "0100" else
-        EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & EXinst(38 downto 23) & v & n & z & EXinst(70 downto 55) & ulaOut & EXinst(6 downto 0);
+    -- Não altera as flags para instruções que não são de ULA: ld, jump, mov, sw, lw bne e ble
+    MEMinstIn <= EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & r0ImmSelect & MEMinst(41 downto 39) & EXinst(70 downto 55) & ulaOut & EXinst(6 downto 0) when opcodeEX = "0001" or (opcodeEX = "0010" and (functEX = "010" or functEX = "100" or functEX = "101")) or (opcodeEX = "0011" and functEX = "001") or opcodeEX = "0100" else
+        EXinst(73 downto 71) & (EXinst(22 downto 7) + EXinst(38 downto 23)) & r0ImmSelect & v & n & z & EXinst(70 downto 55) & ulaOut & EXinst(6 downto 0);
+    -- Altera para r0 apenas quando é sw
+    r0ImmSelect <= EXinst(54 downto 39) when opcodeEX = "0010" and functEX = "101" else -- sw
+        EXinst(38 downto 23);
     -- MEMORY  
+    ramMem : RAM port map(
+        clk => clk,
+        address => MEMinst(29 downto 23), -- r1 (apenas os últimos 7 bits)
+        wrEn => ramWrt,
+        dataIn => MEMinst(57 downto 42), -- r0
+        dataOut => ramOut
+    );
+    ramWrt <= '1' when opcodeMEM = "0010" and functMEM = "101" else -- sw
+        '0';
+    -- Só escreve em lw
+    ulaRamSelect <= ramOut when opcodeMEM = "0010" and functMEM = "100" else -- lw
+        MEMinst(22 downto 7);
     -------------------------
     MEM_WB : reg77 port map(
         clk => clk,
@@ -234,7 +259,7 @@ begin
         dataIn => WBinstIN,
         dataOut => WBinst
     );
-    WBinstIN <= MEMinst; -- por enquanto não existe RAM
+    WBinstIN <= MEMinst(76 downto 23) & ulaRamSelect & MEMinst(6 downto 0); -- por enquanto não existe RAM
     -- WRITE BACK     
     memtoReg <= "00" when opcodeWB = "0010" and functWB = "000" else -- add
         "00" when opcodeWB = "0010" and functWB = "001" else -- sub

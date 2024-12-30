@@ -183,12 +183,15 @@ begin
     stall <= '1' when opcodeID = "0001" and functID = "000" else -- jump
         '1' when opcodeID = "0100" and IDinst(35) = '1' else -- branch e chutou que pula
         '0';
-    -- FORWARDING
-    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) else -- Estado EXECUTE
-        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) else -- Estado MEMORY
+    -- FORWARDING 
+    -- São consideradas instruções r e i - cmp e cmpi
+    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and functEX /= "011") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE 
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and functMEM /= "011") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
+        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeWB = "0010" and functWB /= "011") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
         r1;
-    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) else -- Estado EXECUTE
-        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) else -- Estado MEMORY
+    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and functEX /= "011") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and functMEM /= "011") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
+        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and functWB /= "011") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
         r0;
     -------------------------
     ID_EX : reg77 port map(

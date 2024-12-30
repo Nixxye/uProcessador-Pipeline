@@ -1,25 +1,28 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Sat Dec 28 17:06:48 2024
+[*] Mon Dec 30 19:28:25 2024
 [*]
-[dumpfile] "/mnt/c/Users/cjean/OneDrive/Documentos/GitHub/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Sat Dec 28 16:53:18 2024"
-[dumpfile_size] 589611
-[savefile] "/mnt/c/Users/cjean/OneDrive/Documentos/GitHub/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 0
-[size] 1920 984
-[pos] -623 -10
-*-27.931662 325000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
+[dumpfile_mtime] "Mon Dec 30 19:27:44 2024"
+[dumpfile_size] 596815
+[savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
+[timestart] 10435000000
+[size] 1270 964
+[pos] -586 -122
+*-27.931662 10976000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
 [sst_width] 276
 [signals_width] 210
 [sst_expanded] 1
-[sst_vpaned_height] 633
-@c00024
-tb.uut.pcmem[15:0]
+[sst_vpaned_height] 618
 @28
+tb.clk
+tb.rst
+@c00025
+tb.uut.pcmem[15:0]
+@29
 (0)tb.uut.pcmem[15:0]
 (1)tb.uut.pcmem[15:0]
 (2)tb.uut.pcmem[15:0]
@@ -36,7 +39,7 @@ tb.uut.pcmem[15:0]
 (13)tb.uut.pcmem[15:0]
 (14)tb.uut.pcmem[15:0]
 (15)tb.uut.pcmem[15:0]
-@1401200
+@1401201
 -group_end
 @28
 tb.uut.rstif_id
@@ -49,8 +52,6 @@ tb.uut.pcreg.dataout[15:0]
 @22
 tb.uut.pcin[15:0]
 @28
-tb.rst
-tb.clk
 tb.uut.excp
 @22
 tb.uut.regfile.rs0[15:0]
@@ -80,85 +81,16 @@ tb.uut.regfile.rs4[15:0]
 (15)tb.uut.regfile.rs4[15:0]
 @1401200
 -group_end
-@22
-tb.uut.opcodeid[3:0]
-@28
-tb.uut.functid[2:0]
-@22
-tb.uut.romout[18:0]
-@28
-tb.uut.if_id.wren
-tb.uut.if_id.rst
-@c00022
-tb.uut.idinst[76:0]
-@28
-(70)tb.uut.idinst[76:0]
-(71)tb.uut.idinst[76:0]
-(72)tb.uut.idinst[76:0]
-(73)tb.uut.idinst[76:0]
-(74)tb.uut.idinst[76:0]
-(75)tb.uut.idinst[76:0]
-(76)tb.uut.idinst[76:0]
-@1401200
--group_end
-@22
-tb.uut.if_id.datain[76:0]
 @800022
-tb.uut.meminst[76:0]
-@28
-(35)tb.uut.meminst[76:0]
-(36)tb.uut.meminst[76:0]
-(37)tb.uut.meminst[76:0]
-@1001200
--group_end
-@22
-tb.uut.ulat.dataina[15:0]
-tb.uut.ulat.datainb[15:0]
-tb.uut.ulat.dataout[15:0]
-@28
-tb.uut.memtoreg[1:0]
-@c00022
 tb.uut.wbinst[76:0]
 @28
-(54)tb.uut.wbinst[76:0]
-(55)tb.uut.wbinst[76:0]
-(56)tb.uut.wbinst[76:0]
-(57)tb.uut.wbinst[76:0]
-(58)tb.uut.wbinst[76:0]
-(59)tb.uut.wbinst[76:0]
-(60)tb.uut.wbinst[76:0]
-(61)tb.uut.wbinst[76:0]
-(62)tb.uut.wbinst[76:0]
-(63)tb.uut.wbinst[76:0]
-(64)tb.uut.wbinst[76:0]
-(65)tb.uut.wbinst[76:0]
-(66)tb.uut.wbinst[76:0]
-(67)tb.uut.wbinst[76:0]
-(68)tb.uut.wbinst[76:0]
-(69)tb.uut.wbinst[76:0]
-@1401200
--group_end
-@22
-tb.uut.meminstin[76:0]
-@800024
-tb.uut.exinst[76:0]
-@28
-(54)tb.uut.exinst[76:0]
-(55)tb.uut.exinst[76:0]
-(56)tb.uut.exinst[76:0]
-(57)tb.uut.exinst[76:0]
-(58)tb.uut.exinst[76:0]
-(59)tb.uut.exinst[76:0]
-(60)tb.uut.exinst[76:0]
-(61)tb.uut.exinst[76:0]
-(62)tb.uut.exinst[76:0]
-(63)tb.uut.exinst[76:0]
-(64)tb.uut.exinst[76:0]
-(65)tb.uut.exinst[76:0]
-(66)tb.uut.exinst[76:0]
-(67)tb.uut.exinst[76:0]
-(68)tb.uut.exinst[76:0]
-(69)tb.uut.exinst[76:0]
+(70)tb.uut.wbinst[76:0]
+(71)tb.uut.wbinst[76:0]
+(72)tb.uut.wbinst[76:0]
+(73)tb.uut.wbinst[76:0]
+(74)tb.uut.wbinst[76:0]
+(75)tb.uut.wbinst[76:0]
+(76)tb.uut.wbinst[76:0]
 @1001200
 -group_end
 [pattern_trace] 1

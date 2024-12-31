@@ -63,12 +63,12 @@ architecture a_main of main is
 
     signal IDinst, IDinstIn, EXinst, EXinstIN, MEMinst, WBinstIN, MEMinstIn, WBinst : unsigned(76 downto 0);
     signal romOut : unsigned(18 downto 0);
-    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, pcMem, ramOut, r0ImmSelect, ulaRamSelect : unsigned(15 downto 0);
+    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, romAddress, pcMem, ramOut, r0ImmSelect, ulaRamSelect : unsigned(15 downto 0);
     -- opcodes de cada estado
     signal opcodeID, opcodeEX, opcodeMEM, opcodeWB, ulaOp : unsigned (3 downto 0);
     signal r0Address, wrAddress, pcSource, functID, functEX, functMEM, functWB : unsigned(2 downto 0);
     signal memtoReg : unsigned(1 downto 0);
-    signal rstIF_ID, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, ramWrt, z, n, v, flush, flushAux : std_logic;
+    signal rstIF_ID, jmpRst, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, ramWrt, z, n, v, flush, flushAux : std_logic;
 begin
     -- CONTROLE DOS ESTADOS:
     opcodeID <= IDinst(3 downto 0);
@@ -98,20 +98,23 @@ begin
     romMem : ROM port map(
         clk => clk,
         rst => rst,
-        address => pcOut,
+        address => romAddress,
         data => romOut
     );
+    romAddress <= pcMem when stall = '1' else pcOut;
     pcIn <= pcOut + 1 when pcSource = "000" else
         "0000" & romOut(18 downto 7) when pcSource = "001" and romOut(18) = '0' else -- imm (jmp)
         EXinst(22 downto 7) + EXinst(38 downto 23) when pcSource = "010" else -- pcAntigo + delta (ble e blt)
         EXinst(22 downto 7) + x"0001" when pcSource = "011" else -- pcAntigo + 1 (ble e blt)
         pcOut + ("0000" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '0' else -- pc + delta
         pcOut + ("1111" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '1' else -- pc + delta
+        pcOut when pcSource = "101" else -- stall
         (others => '0');
     -- Chute do branch (ADD Branch Prediction aqui):
     jmpGuess <= '1';
     -- Adianta o pulo:
-    pcSource <= "010" when flush = '1' and jmpReal = '1' else -- errou e tem que pular (pcAntigo + delta)
+    pcSource <= "101" when stall = '1' else -- stall
+        "010" when flush = '1' and jmpReal = '1' else -- errou e tem que pular (pcAntigo + delta)
         "011" when flush = '1' and jmpReal = '0' else -- errou e não tem que pular (pcAntigo + 1)
         "001" when romOut(3 downto 0) = "0001" and romOut(6 downto 4) = "000" else -- jmp
         "100" when romOut(3 downto 0) = "0100" and jmpGuess = '1' else -- branch (chute)
@@ -126,7 +129,7 @@ begin
         dataOut => IDinst
     );
     IDinstIn <= "00000000000000000000000000000000000000000" & jmpGuess & pcMem & romOut;
-    rstIF_ID <= rst or stall or flush or flushAux;
+    rstIF_ID <= rst or jmpRst or flush or flushAux or stall;
     -- INSTRUCTION DECODE
     regFile : registerFile port map(
         clk => clk,
@@ -171,18 +174,23 @@ begin
         "1111111" & IDinst(18 downto 10) when IDinst(18) = '1' and instrI = '1' else
         (others => '0');
 
-    -- STALLS (reset do registrador depende de clock)
-    stall <= '1' when opcodeID = "0001" and functID = "000" else -- jump
+    -- (reset do registrador depende de clock)
+    jmpRst <= '1' when opcodeID = "0001" and functID = "000" else -- jump
         '1' when opcodeID = "0100" and IDinst(35) = '1' else -- branch e chutou que pula
+        '0';
+    -- STALLS:
+    stall <= '1' when opcodeID = "0010" and functID = "100" and (((romOut(6 downto 4) = "0010" or romOut(6 downto 4) = "0011") and romOut(9 downto 7) = IDinst(9 downto 7)) or (romOut(6 downto 4) = "0010" and romOut(12 downto 10) = IDinst(9 downto 7))) else -- lw seguido de intrução que usa o resultado
         '0';
     -- FORWARDING 
     -- São consideradas instruções r e i - cmp e cmpi
     r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and functEX /= "011" and functEX /= "100" and functEX /= "101") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE 
         MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and functMEM /= "011" and functMEM /= "100" and functMEM /= "101") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
+        ramOut when MEMinst(76 downto 74) = IDinst(12 downto 10) and (opcodeMEM = "0010" and functMEM = "100") else -- Estado MEMORY (lw)
         WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeWB = "0010" and functWB /= "011" and functWB /= "100" and functWB /= "101") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
         r1;
     r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and functEX /= "011" and functEX /= "100" and functEX /= "101") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE
         MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and functMEM /= "011" and functMEM /= "100" and functMEM /= "101") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
+        ramOut when MEMinst(76 downto 74) = IDinst(9 downto 7) and (opcodeMEM = "0010" and functMEM = "100") else -- Estado MEMORY (lw)
         WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and functWB /= "011" and functWB /= "100" and functWB /= "101") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
         r0;
     -------------------------

@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Tue Dec 31 19:53:23 2024
+[*] Tue Dec 31 20:34:58 2024
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Tue Dec 31 19:52:59 2024"
-[dumpfile_size] 207626
+[dumpfile_mtime] "Tue Dec 31 20:34:21 2024"
+[dumpfile_size] 210941
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
 [timestart] 0
 [size] 1270 964
-[pos] -77 -137
-*-27.931662 506000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -1340 -120
+*-27.931662 693000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
@@ -112,5 +112,24 @@ tb.uut.meminst[76:0]
 @22
 tb.uut.r0immselect[15:0]
 tb.uut.r1fwd[15:0]
+@c00028
+tb.uut.functid[2:0]
+@28
+(0)tb.uut.functid[2:0]
+(1)tb.uut.functid[2:0]
+(2)tb.uut.functid[2:0]
+@1401200
+-group_end
+@28
+tb.uut.functex[2:0]
+tb.uut.functmem[2:0]
+tb.uut.functwb[2:0]
+@22
+tb.uut.romout[18:0]
+tb.uut.romaddress[15:0]
+@28
+tb.uut.rommem.rst
+@23
+tb.uut.rommem.address[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

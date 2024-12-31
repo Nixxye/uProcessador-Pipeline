@@ -19,8 +19,6 @@ begin
    process(clk,wrEn)
    begin
       if rising_edge(clk) then
-        -- if address > 127 then -- APENAS PARA TESTES -> RETIRAR NA APRESENTAÇÃO
-        --     dataOut <= (others => '0');
         if wrEn='1' then
             conteudo_RAM(to_integer(address)) <= dataIn;
         end if;

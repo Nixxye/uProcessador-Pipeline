@@ -17,16 +17,14 @@ architecture a_ROM of ROM is
         1 => B"000000011_011_001_0011",     -- ld r3, 3
         2 => B"000000_010_011_101_0010",    -- sw r3, (r2) 
         3 => B"000000_011_010_101_0010",    -- sw r2, (r3)
-        -- 4 => B"000000_100_010_100_0010",    -- lw r4, (r2)
-        -- 5 => B"000000_010_011_100_0010",    -- lw r2, (r3)
+        4 => B"000000_010_100_100_0010",    -- lw r4, (r2)
+        5 => B"000000_011_011_100_0010",    -- lw r3, (r3)
         others => (others => '0')
     );
 begin
     process(clk)
     begin
         if rst = '1' then
-            data <= (others => '0');
-        elsif address > 127 then -- APENAS PARA TESTES -> RETIRAR NA APRESENTAÇÃO
             data <= (others => '0');
         elsif rising_edge(clk) then
             data <= romContent(to_integer(unsigned(address)));

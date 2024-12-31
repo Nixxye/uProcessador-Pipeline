@@ -139,7 +139,7 @@ begin
         r0Data => r0,
         r1Data => r1
     );
-    wrtData <= WBinst(22 downto 7) when memtoReg = "00" else --  saída da ula
+    wrtData <= WBinst(22 downto 7) when memtoReg = "00" else --  saída da ula / saída da RAM
         WBinst(57 downto 42) when memtoReg = "01" else -- constante imediata
         WBinst(38 downto 23) when memtoReg = "10" else -- registrador r0
         -- add saída da RAM aqui
@@ -177,13 +177,13 @@ begin
         '0';
     -- FORWARDING 
     -- São consideradas instruções r e i - cmp e cmpi
-    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and functEX /= "011") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE 
-        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and functMEM /= "011") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
-        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeWB = "0010" and functWB /= "011") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
+    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and functEX /= "011" and functEX /= "100" and functEX /= "101") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE 
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and functMEM /= "011" and functMEM /= "100" and functMEM /= "101") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
+        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeWB = "0010" and functWB /= "011" and functWB /= "100" and functWB /= "101") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
         r1;
-    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and functEX /= "011") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE
-        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and functMEM /= "011") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
-        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and functWB /= "011") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
+    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and functEX /= "011" and functEX /= "100" and functEX /= "101") or (opcodeEX = "0011" and functEX /= "010")) else -- Estado EXECUTE
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and functMEM /= "011" and functMEM /= "100" and functMEM /= "101") or (opcodeMEM = "0011" and functMEM /= "010")) else -- Estado MEMORY
+        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and functWB /= "011" and functWB /= "100" and functWB /= "101") or (opcodeWB = "0011" and functWB /= "010")) else -- Estado WRITE BACK (será escrito no próximo clock)
         r0;
     -------------------------
     ID_EX : reg77 port map(
@@ -264,12 +264,14 @@ begin
     memtoReg <= "00" when opcodeWB = "0010" and functWB = "000" else -- add
         "00" when opcodeWB = "0010" and functWB = "001" else -- sub
         "00" when opcodeWB = "0011" and functWB = "000" else -- addi
+        "00" when opcodeWB = "0010" and functWB = "100" else -- lw
         "10" when opcodeWB = "0010" and functWB = "010" else -- move
         "01" when opcodeWB = "0011" and functWB = "001" else -- ld
         "00";
     regWrt <= '1' when opcodeWB = "0010" and functWB = "000" else -- add
         '1' when opcodeWB = "0010" and functWB = "001" else -- sub
         '1' when opcodeWB = "0010" and functWB = "010" else -- move
+        '1' when opcodeWB = "0010" and functWB = "100" else -- lw
         '1' when opcodeWB = "0011" and functWB = "000" else -- addi
         '1' when opcodeWB = "0011" and functWB = "001" else -- ld
         '0';

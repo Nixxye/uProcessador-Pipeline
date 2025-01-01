@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Wed Jan  1 20:10:09 2025
+[*] Wed Jan  1 21:59:49 2025
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Wed Jan  1 20:03:27 2025"
-[dumpfile_size] 208207
+[dumpfile_mtime] "Wed Jan  1 21:59:12 2025"
+[dumpfile_size] 20112251
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 285000000
-[size] 1270 964
-[pos] 1208 -287
-*-27.931662 437000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 8365000000
+[size] 1589 964
+[pos] -1026 -268
+*-27.931662 8617000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
@@ -81,15 +81,18 @@ tb.uut.regfile.rs4[15:0]
 (15)tb.uut.regfile.rs4[15:0]
 @1401200
 -group_end
-@22
+@24
+tb.uut.rammem.address[6:0]
 tb.uut.ramout[15:0]
-@24
+tb.uut.rammem.dataout[15:0]
 tb.uut.ulat.dataina[15:0]
-@29
 tb.uut.ulat.datainb[15:0]
-@24
 tb.uut.ulat.dataout[15:0]
+tb.uut.r0fwd[15:0]
+tb.uut.ulaout[15:0]
 @22
-tb.uut.ulat.opselect[3:0]
+tb.uut.r1fwd[15:0]
+tb.uut.r0dbg[15:0]
+tb.uut.r1dbg[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

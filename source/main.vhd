@@ -159,6 +159,7 @@ begin
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "000" else -- addi
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "001" else -- ld
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "010" else -- cmpi
+        '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "011" else -- lui
         '0' when romOut(3 downto 0) = "0100" and romOut(6 downto 4) = "000" else -- ble
         '0' when romOut(3 downto 0) = "0100" and romOut(6 downto 4) = "001" else -- blt
         '1';
@@ -170,8 +171,9 @@ begin
     -- extensão de sinal
     imm <= "0000" & IDinst(18 downto 7) when IDinst(18) = '0' and (instrJ = '1' or instrB = '1') else
         "1111" & IDinst(18 downto 7) when IDinst(18) = '1' and (instrJ = '1' or instrB = '1') else
-        "0000000" & IDinst(18 downto 10) when IDinst(18) = '0' and instrI = '1' else
-        "1111111" & IDinst(18 downto 10) when IDinst(18) = '1' and instrI = '1' else
+        "0000000" & IDinst(18 downto 10) when IDinst(18) = '0' and instrI = '1' and functID /= "011" else -- I que não é lui
+        "1111111" & IDinst(18 downto 10) when IDinst(18) = '1' and instrI = '1' and functID /= "011" else
+        IDinst(17 downto 10) & "00000000" when instrI = '1' and functID = "011" else -- lui (7 bits mais significativos)
         (others => '0');
 
     -- (reset do registrador depende de clock)
@@ -275,6 +277,7 @@ begin
         "00" when opcodeWB = "0010" and functWB = "100" else -- lw
         "10" when opcodeWB = "0010" and functWB = "010" else -- move
         "01" when opcodeWB = "0011" and functWB = "001" else -- ld
+        "01" when opcodeWB = "0011" and functWB = "011" else -- lui
         "00";
     regWrt <= '1' when opcodeWB = "0010" and functWB = "000" else -- add
         '1' when opcodeWB = "0010" and functWB = "001" else -- sub
@@ -282,6 +285,7 @@ begin
         '1' when opcodeWB = "0010" and functWB = "100" else -- lw
         '1' when opcodeWB = "0011" and functWB = "000" else -- addi
         '1' when opcodeWB = "0011" and functWB = "001" else -- ld
+        '1' when opcodeWB = "0011" and functWB = "011" else -- lui
         '0';
     -- Utilizado para dar mais um flush no primeiro registrador, já que o primeiro estado possui 2 clocks:
     process (clk)

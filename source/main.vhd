@@ -186,8 +186,8 @@ begin
         '0';
     -- FORWARDING 
     r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
-        imm when EXinst(73 downto 71) = IDinst(12 downto 10) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
-        EXinst(54 downto 39) when EXinst(73 downto 71) = IDinst(12 downto 10) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
+        EXinst(38 downto 23) when EXinst(73 downto 71) = IDinst(12 downto 10) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
+        EXinst(70 downto 55) when EXinst(73 downto 71) = IDinst(12 downto 10) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
         -- MEMORY
         MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000")) else -- (instruções add, sub e addi)
         MEMinst(57 downto 42) when MEMinst(76 downto 74) = IDinst(12 downto 10) and (opcodeMEM = "0011" and (functMEM = "001" or functMEM = "011")) else -- (instruções ld e lui)
@@ -200,8 +200,8 @@ begin
         r1;
 
     r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
-        imm when EXinst(73 downto 71) = IDinst(9 downto 7) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
-        EXinst(54 downto 39) when EXinst(73 downto 71) = IDinst(9 downto 7) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
+        EXinst(38 downto 23) when EXinst(73 downto 71) = IDinst(9 downto 7) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
+        EXinst(70 downto 55) when EXinst(73 downto 71) = IDinst(9 downto 7) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
         -- MEMORY
         MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000")) else -- (instruções add, sub e addi)
         MEMinst(57 downto 42) when MEMinst(76 downto 74) = IDinst(9 downto 7) and (opcodeMEM = "0011" and (functMEM = "001" or functMEM = "011")) else -- (instruções ld e lui)

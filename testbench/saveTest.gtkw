@@ -1,20 +1,20 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Wed Jan  1 21:59:49 2025
+[*] Fri Jan  3 20:06:25 2025
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Wed Jan  1 21:59:12 2025"
-[dumpfile_size] 20112251
+[dumpfile_mtime] "Fri Jan  3 19:49:49 2025"
+[dumpfile_size] 20262272
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 8365000000
-[size] 1589 964
-[pos] -1026 -268
-*-27.931662 8617000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 26613000000
+[size] 1270 964
+[pos] -586 -122
+*-27.931662 27139000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
 [sst_width] 276
-[signals_width] 408
+[signals_width] 225
 [sst_expanded] 1
 [sst_vpaned_height] 618
 @28
@@ -58,7 +58,6 @@ tb.uut.regfile.rs0[15:0]
 @24
 tb.uut.regfile.rs1[15:0]
 tb.uut.regfile.rs2[15:0]
-@22
 tb.uut.regfile.rs3[15:0]
 @c00024
 tb.uut.regfile.rs4[15:0]
@@ -94,5 +93,12 @@ tb.uut.ulaout[15:0]
 tb.uut.r1fwd[15:0]
 tb.uut.r0dbg[15:0]
 tb.uut.r1dbg[15:0]
+@28
+tb.uut.pred.guess[1:0]
+tb.uut.pred.clk
+tb.uut.pred.jumped
+tb.uut.functex[2:0]
+@22
+tb.uut.opcodeex[3:0]
 [pattern_trace] 1
 [pattern_trace] 0

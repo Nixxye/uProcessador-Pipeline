@@ -43,6 +43,15 @@ architecture a_main of main is
         );
     end component;
 
+    component predictor is 
+        port(
+            clk : in std_logic;
+            rst : in std_logic;
+            jumped : in std_logic;
+            prediction : out std_logic
+        );
+    end component;
+
     component ROM is
         port (
             clk, rst : in std_logic;
@@ -70,7 +79,7 @@ architecture a_main of main is
     signal opcodeID, opcodeEX, opcodeMEM, opcodeWB, ulaOp : unsigned (3 downto 0);
     signal r0Address, wrAddress, pcSource, functID, functEX, functMEM, functWB : unsigned(2 downto 0);
     signal memtoReg : unsigned(1 downto 0);
-    signal rstIF_ID, jmpRst, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, ramWrt, z, n, v, flush, flushAux : std_logic;
+    signal rstIF_ID, jmpRst, stall, instrB, instrJ, instrI, pcWrt, jmpGuess, jmpReal, excp, regWrt, ramWrt, z, n, v, flush, flushAux, clkEnPredictor : std_logic;
 begin
     -- CONTROLE DOS ESTADOS:
     opcodeID <= IDinst(3 downto 0);
@@ -102,7 +111,8 @@ begin
         rst => rst,
         address => romAddress,
         data => romOut
-    );
+    );   
+
     romAddress <= pcMem when stall = '1' else pcOut;
     pcIn <= pcOut + 1 when pcSource = "000" else
         "0000" & romOut(18 downto 7) when pcSource = "001" and romOut(18) = '0' else -- imm (jmp)
@@ -112,8 +122,13 @@ begin
         pcOut + ("1111" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '1' else -- pc + delta
         pcOut when pcSource = "101" else -- stall
         (others => '0');
-    -- Chute do branch (ADD Branch Prediction aqui):
-    jmpGuess <= '1';
+    -- Branch prediction:
+    pred : predictor port map(
+        clk => clkEnPredictor,
+        rst => rst,
+        jumped => jmpReal,
+        prediction => jmpGuess
+    );
     -- Adianta o pulo:
     pcSource <= "101" when stall = '1' else -- stall
         "010" when flush = '1' and jmpReal = '1' else -- errou e tem que pular (pcAntigo + delta)
@@ -239,7 +254,8 @@ begin
         x"0008" when WBinst(76 downto 74) = IDinst(9 downto 7) and (opcodeWB = "0011" and (functWB = "001" or functWB = "011")) else -- (instruções ld e lui)
         x"0009" when WBinst(76 downto 74) = IDinst(9 downto 7) and opcodeWB = "0010" and functWB = "010" else -- (instrução mov)
         x"0010";
-
+    
+    clkEnPredictor <= '1' when opcodeEX = "0100" else '0'; -- Acredito que possa dar erro de temporização (para resolver basta verificar a instrução de um estado posterior)
     -------------------------
     ID_EX : reg77 port map(
             clk => clk,
@@ -276,8 +292,8 @@ begin
     jmpReal <= '1' when opcodeEX = "0100" and functEX = "000" and ((MEMinst(40) /= MEMinst(41)) or (MEMinst(39) = '1')) else -- n != v or z = '1' <= ble
         '1' when opcodeEX = "0100" and functEX = "001" and MEMinst(40) /= MEMinst(41) else -- n != v <= blt
         '0';
-    
-    flush <= '1' when EXinst(74) = '1' and opcodeEX = "0100" and jmpReal /= EXinst(74) else -- pulou e não deveria pular ou não pulou e deveria pular
+
+    flush <= '1' when opcodeEX = "0100" and jmpReal /= EXinst(74) else -- pulou e não deveria pular ou não pulou e deveria pular
         '0';
     -------------------------
     EX_MEM : reg77 port map(

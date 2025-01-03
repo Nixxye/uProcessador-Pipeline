@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Fri Jan  3 20:06:25 2025
+[*] Fri Jan  3 20:42:08 2025
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Fri Jan  3 19:49:49 2025"
-[dumpfile_size] 20262272
+[dumpfile_mtime] "Fri Jan  3 20:40:28 2025"
+[dumpfile_size] 1452244
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 26613000000
+[timestart] 0
 [size] 1270 964
-[pos] -586 -122
-*-27.931662 27139000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] -534 -130
+*-27.931662 663000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
 [treeopen] tb.uut.regfile.
@@ -100,5 +100,9 @@ tb.uut.pred.jumped
 tb.uut.functex[2:0]
 @22
 tb.uut.opcodeex[3:0]
+@28
+tb.uut.excp
+@23
+tb.uut.pcin[15:0]
 [pattern_trace] 1
 [pattern_trace] 0

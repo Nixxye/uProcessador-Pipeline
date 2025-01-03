@@ -94,7 +94,7 @@ begin
     pcReg : reg16 port map(
         clk => clk,
         rst => rst,
-        wrEn => pcWrt,
+        wrEn => '1',
         dataIn => pcIn,
         dataOut => pcOut
     );
@@ -102,7 +102,7 @@ begin
     pcMemReg : reg16 port map(
         clk => clk,
         rst => rst,
-        wrEn => '1',
+        wrEn => pcWrt,
         dataIn => pcOut,
         dataOut => pcMem
     );
@@ -114,7 +114,9 @@ begin
     );   
 
     romAddress <= pcMem when stall = '1' else pcOut;
-    pcIn <= pcOut + 1 when pcSource = "000" else
+
+    pcIn <= pcmem when excp = '1' else -- paralisa o pc
+        pcOut + 1 when pcSource = "000" else
         "0000" & romOut(18 downto 7) when pcSource = "001" and romOut(18) = '0' else -- imm (jmp)
         EXinst(22 downto 7) + EXinst(38 downto 23) when pcSource = "010" else -- pcAntigo + delta (ble e blt)
         EXinst(22 downto 7) + x"0001" when pcSource = "011" else -- pcAntigo + 1 (ble e blt)
@@ -136,7 +138,6 @@ begin
         "001" when romOut(3 downto 0) = "0001" and romOut(6 downto 4) = "000" else -- jmp
         "100" when romOut(3 downto 0) = "0100" and jmpGuess = '1' else -- branch (chute)
         "000"; 
-    pcWrt <= not excp;
     -------------------------
     IF_ID : reg77 port map(
         clk => clk,
@@ -164,6 +165,9 @@ begin
         WBinst(38 downto 23) when memtoReg = "10" else -- registrador r1
         (others => '0');
     wrAddress <= WBinst(76 downto 74);
+
+    pcWrt <= not excp;
+
     excp <= '0' when romOut(3 downto 0) = "0000" and romOut(6 downto 4) = "000" else --nop
         '0' when romOut(3 downto 0) = "0001" and romOut(6 downto 4) = "000" else -- jmp
         '0' when romOut(3 downto 0) = "0010" and romOut(6 downto 4) = "000" else -- add
@@ -178,6 +182,7 @@ begin
         '0' when romOut(3 downto 0) = "0011" and romOut(6 downto 4) = "011" else -- lui
         '0' when romOut(3 downto 0) = "0100" and romOut(6 downto 4) = "000" else -- ble
         '0' when romOut(3 downto 0) = "0100" and romOut(6 downto 4) = "001" else -- blt
+        '0' when romOut(3 downto 0) = "0101" and romOut(6 downto 4) = "000" else -- inc
         '1';
     -- imm gen
     -- define qual é o tamanho da constante a ser extraída da instrução
@@ -287,6 +292,7 @@ begin
         "0001" when opcodeEX = "0010" and functEX = "001" else -- sub
         "0001" when opcodeEX = "0010" and functEX = "011" else -- cmp
         "0001" when opcodeEX = "0011" and functEX = "010" else -- cmpi
+        "0101" when opcodeEX = "0101" and functEX = "000" else -- inc
         (others => '0');
     -- Verifica se o chute de branch foi correto:
     jmpReal <= '1' when opcodeEX = "0100" and functEX = "000" and ((MEMinst(40) /= MEMinst(41)) or (MEMinst(39) = '1')) else -- n != v or z = '1' <= ble
@@ -347,6 +353,7 @@ begin
         '1' when opcodeWB = "0011" and functWB = "000" else -- addi
         '1' when opcodeWB = "0011" and functWB = "001" else -- ld
         '1' when opcodeWB = "0011" and functWB = "011" else -- lui
+        '1' when opcodeWB = "0101" and functWB = "000" else -- inc
         '0';
     -- Utilizado para dar mais um flush no primeiro registrador, já que o primeiro estado possui 2 clocks:
     process (clk)

@@ -1,17 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
-[*] Fri Jan  3 20:42:08 2025
+[*] Sat Jan  4 19:36:55 2025
 [*]
 [dumpfile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/work/tb.vcd"
-[dumpfile_mtime] "Fri Jan  3 20:40:28 2025"
-[dumpfile_size] 1452244
+[dumpfile_mtime] "Sat Jan  4 19:34:46 2025"
+[dumpfile_size] 127420533
 [savefile] "/mnt/c/Users/Nix/Documents/uProcessador-Pipeline/testbench/saveTest.gtkw"
-[timestart] 0
-[size] 1270 964
-[pos] -534 -130
-*-27.931662 663000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 2257719000000
+[size] 1069 964
+[pos] -77 -137
+*-28.231661 2258175000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb.
 [treeopen] tb.uut.
+[treeopen] tb.uut.pred.
 [treeopen] tb.uut.regfile.
 [sst_width] 276
 [signals_width] 225
@@ -41,6 +42,10 @@ tb.uut.pcmem[15:0]
 (15)tb.uut.pcmem[15:0]
 @1401200
 -group_end
+@28
+tb.uut.pcsource[2:0]
+@25
+tb.uut.pcin[15:0]
 @28
 tb.uut.rstif_id
 tb.uut.jmpguess
@@ -80,29 +85,24 @@ tb.uut.regfile.rs4[15:0]
 (15)tb.uut.regfile.rs4[15:0]
 @1401200
 -group_end
+@22
+tb.uut.rammem.datain[15:0]
+@28
+tb.uut.rammem.wren
+@22
+tb.uut.opcodemem[3:0]
 @24
-tb.uut.rammem.address[6:0]
-tb.uut.ramout[15:0]
-tb.uut.rammem.dataout[15:0]
-tb.uut.ulat.dataina[15:0]
-tb.uut.ulat.datainb[15:0]
-tb.uut.ulat.dataout[15:0]
-tb.uut.r0fwd[15:0]
+tb.uut.regfile.wraddress[2:0]
+tb.uut.regfile.wrdata[15:0]
+@28
+tb.uut.regfile.wren
+tb.uut.memtoreg[1:0]
+@24
+tb.uut.ularamselect[15:0]
 tb.uut.ulaout[15:0]
-@22
-tb.uut.r1fwd[15:0]
-tb.uut.r0dbg[15:0]
-tb.uut.r1dbg[15:0]
+tb.uut.ramout[15:0]
 @28
-tb.uut.pred.guess[1:0]
-tb.uut.pred.clk
-tb.uut.pred.jumped
-tb.uut.functex[2:0]
-@22
-tb.uut.opcodeex[3:0]
-@28
-tb.uut.excp
-@23
-tb.uut.pcin[15:0]
+tb.uut.functwb[2:0]
+tb.uut.opcodewb[3:0]
 [pattern_trace] 1
 [pattern_trace] 0

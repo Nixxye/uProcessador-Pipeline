@@ -55,7 +55,7 @@ architecture a_main of main is
     component ROM is
         port (
             clk, rst : in std_logic;
-            address : in unsigned(15 downto 0);
+            address : in unsigned(6 downto 0);
             data : out unsigned(18 downto 0) -- Instruções de 19 bits
         );
     end component;
@@ -63,7 +63,7 @@ architecture a_main of main is
     component RAM is
         port( 
                 clk      : in std_logic;
-                address : in unsigned(6 downto 0);
+                address : in unsigned(10 downto 0);
                 wrEn    : in std_logic;
                 dataIn  : in unsigned(15 downto 0);
                 dataOut : out unsigned(15 downto 0) 
@@ -72,7 +72,7 @@ architecture a_main of main is
 
     signal IDinst, IDinstIn, EXinst, EXinstIN, MEMinst, WBinstIN, MEMinstIn, WBinst : unsigned(76 downto 0);
     signal romOut : unsigned(18 downto 0);
-    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, romAddress, pcMem, ramOut, r0ImmSelect, ulaRamSelect : unsigned(15 downto 0);
+    signal imm, ulaA, ulaB, r0, r1, r0Fwd, r1Fwd, wrtData, ulaOut, pcIn, pcOut, romAddress, pcMem, ramOut, r0ImmSelect, ulaRamSelect, ramAddress : unsigned(15 downto 0);
     -- debug:
     signal r0DBG, r1DBG : unsigned(15 downto 0);
     -- opcodes de cada estado
@@ -109,7 +109,7 @@ begin
     romMem : ROM port map(
         clk => clk,
         rst => rst,
-        address => romAddress,
+        address => romAddress(6 downto 0),
         data => romOut
     );   
 
@@ -120,8 +120,8 @@ begin
         "0000" & romOut(18 downto 7) when pcSource = "001" and romOut(18) = '0' else -- imm (jmp)
         EXinst(22 downto 7) + EXinst(38 downto 23) when pcSource = "010" else -- pcAntigo + delta (ble e blt)
         EXinst(22 downto 7) + x"0001" when pcSource = "011" else -- pcAntigo + 1 (ble e blt)
-        pcOut + ("0000" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '0' else -- pc + delta
-        pcOut + ("1111" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '1' else -- pc + delta
+        pcmem + ("0000" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '0' else -- pc + delta
+        pcmem + ("1111" & romOut(18 downto 7)) when pcSource = "100" and romOut(18) = '1' else -- pc + delta
         pcOut when pcSource = "101" else -- stall
         (others => '0');
     -- Branch prediction:
@@ -205,57 +205,57 @@ begin
     stall <= '1' when opcodeID = "0010" and functID = "100" and (((romOut(6 downto 4) = "0010" or romOut(6 downto 4) = "0011") and romOut(9 downto 7) = IDinst(9 downto 7)) or (romOut(6 downto 4) = "0010" and romOut(12 downto 10) = IDinst(9 downto 7))) else -- lw seguido de intrução que usa o resultado
         '0';
     -- FORWARDING 
-    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
+    r1Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000") or (opcodeEX = "0101" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub, addi e inc)
         EXinst(38 downto 23) when EXinst(73 downto 71) = IDinst(12 downto 10) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
         EXinst(70 downto 55) when EXinst(73 downto 71) = IDinst(12 downto 10) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
         -- MEMORY
-        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000")) else -- (instruções add, sub e addi)
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000") or (opcodeMEM = "0101" and functMEM = "000")) else -- (instruções add, sub, addi e inc)
         MEMinst(57 downto 42) when MEMinst(76 downto 74) = IDinst(12 downto 10) and (opcodeMEM = "0011" and (functMEM = "001" or functMEM = "011")) else -- (instruções ld e lui)
         MEMinst(38 downto 23) when MEMinst(76 downto 74) = IDinst(12 downto 10) and opcodeMEM = "0010" and functMEM = "010" else -- (instrução mov)
         ramOut when MEMinst(76 downto 74) = IDinst(12 downto 10) and (opcodeMEM = "0010" and functMEM = "100") else -- (instrução lw)
         -- WRITE BACK
-        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000")) else -- (instruções add, sub, addi e lw)
+        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000") or (opcodeWB = "0101" and functWB = "000")) else -- (instruções add, sub, addi, lw e inc)
         WBinst(57 downto 42) when WBinst(76 downto 74) = IDinst(12 downto 10) and (opcodeWB = "0011" and (functWB = "001" or functWB = "011")) else -- (instruções ld e lui)
         WBinst(38 downto 23) when WBinst(76 downto 74) = IDinst(12 downto 10) and opcodeWB = "0010" and functWB = "010" else -- (instrução mov)
         r1;
 
-    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
+    r0Fwd <= ulaOut when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000") or (opcodeEX = "0101" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub, addi e inc)
         EXinst(38 downto 23) when EXinst(73 downto 71) = IDinst(9 downto 7) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
         EXinst(70 downto 55) when EXinst(73 downto 71) = IDinst(9 downto 7) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
         -- MEMORY
-        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000")) else -- (instruções add, sub e addi)
+        MEMinst(22 downto 7) when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000") or (opcodeMEM = "0101" and functMEM = "000")) else -- (instruções add, sub, addi e inc)
         MEMinst(57 downto 42) when MEMinst(76 downto 74) = IDinst(9 downto 7) and (opcodeMEM = "0011" and (functMEM = "001" or functMEM = "011")) else -- (instruções ld e lui)
         MEMinst(38 downto 23) when MEMinst(76 downto 74) = IDinst(9 downto 7) and opcodeMEM = "0010" and functMEM = "010" else -- (instrução mov)
         ramOut when MEMinst(76 downto 74) = IDinst(9 downto 7) and (opcodeMEM = "0010" and functMEM = "100") else -- (instrução lw)
         -- WRITE BACK
-        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000")) else -- (instruções add, sub, addi e lw)
+        WBinst(22 downto 7) when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000") or (opcodeWB = "0101" and functWB = "000")) else -- (instruções add, sub, addi, lw e inc)
         WBinst(57 downto 42) when WBinst(76 downto 74) = IDinst(9 downto 7) and (opcodeWB = "0011" and (functWB = "001" or functWB = "011")) else -- (instruções ld e lui)
         WBinst(38 downto 23) when WBinst(76 downto 74) = IDinst(9 downto 7) and opcodeWB = "0010" and functWB = "010" else -- (instrução mov)
         r0;
     -- DEBUGGING:
-    r1DBG <= x"0000" when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
+    r1DBG <= x"0000" when EXinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000") or (opcodeEX = "0101" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
         x"0001" when EXinst(73 downto 71) = IDinst(12 downto 10) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
         x"0002" when EXinst(73 downto 71) = IDinst(12 downto 10) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
         -- MEMORY
-        x"0003" when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000")) else -- (instruções add, sub e addi)
+        x"0003" when MEMinst(76 downto 74) = IDinst(12 downto 10) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000") or (opcodeMEM = "0101" and functMEM = "000")) else -- (instruções add, sub e addi)
         x"0004" when MEMinst(76 downto 74) = IDinst(12 downto 10) and (opcodeMEM = "0011" and (functMEM = "001" or functMEM = "011")) else -- (instruções ld e lui)
         x"0005" when MEMinst(76 downto 74) = IDinst(12 downto 10) and opcodeMEM = "0010" and functMEM = "010" else -- (instrução mov)
         x"0006" when MEMinst(76 downto 74) = IDinst(12 downto 10) and (opcodeMEM = "0010" and functMEM = "100") else -- (instrução lw)
         -- WRITE BACK
-        x"0007" when WBinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000")) else -- (instruções add, sub, addi e lw)
+        x"0007" when WBinst(73 downto 71) = IDinst(12 downto 10) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000") or (opcodeWB = "0101" and functWB = "000")) else -- (instruções add, sub, addi e lw)
         x"0008" when WBinst(73 downto 71) = IDinst(12 downto 10) and (opcodeWB = "0011" and (functWB = "001" or functWB = "011")) else -- (instruções ld e lui)
         x"0009" when WBinst(73 downto 71) = IDinst(12 downto 10) and opcodeWB = "0010" and functWB = "010" else -- (instrução mov)
         x"0010";
-    r0DBG <= x"0000" when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
+    r0DBG <= x"0000" when EXinst(73 downto 71) = IDinst(9 downto 7) and ((opcodeEX = "0010" and (functEX = "000" or functEX = "001")) or (opcodeEX = "0011" and functEX = "000") or (opcodeEX = "0101" and functEX = "000")) else -- Estado EXECUTE (instruções add, sub e addi)
         x"0001" when EXinst(73 downto 71) = IDinst(9 downto 7) and (opcodeEX = "0011" and (functEX = "001" or functEX = "011")) else -- Estado EXECUTE (instruções ld e lui)
         x"0002" when EXinst(73 downto 71) = IDinst(9 downto 7) and opcodeEX = "0010" and functEX = "010" else -- Estado EXECUTE (instrução mov)
         -- MEMORY
-        x"0003" when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000")) else -- (instruções add, sub e addi)
+        x"0003" when MEMinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeMEM = "0010" and (functMEM = "000" or functMEM = "001")) or (opcodeMEM = "0011" and functMEM = "000") or (opcodeMEM = "0101" and functMEM = "000")) else -- (instruções add, sub e addi)
         x"0004" when MEMinst(76 downto 74) = IDinst(9 downto 7) and (opcodeMEM = "0011" and (functMEM = "001" or functMEM = "011")) else -- (instruções ld e lui)
         x"0005" when MEMinst(76 downto 74) = IDinst(9 downto 7) and opcodeMEM = "0010" and functMEM = "010" else -- (instrução mov)
         x"0006" when MEMinst(76 downto 74) = IDinst(9 downto 7) and (opcodeMEM = "0010" and functMEM = "100") else -- (instrução lw)
         -- WRITE BACK
-        x"0007" when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000")) else -- (instruções add, sub, addi e lw)
+        x"0007" when WBinst(76 downto 74) = IDinst(9 downto 7) and ((opcodeWB = "0010" and (functWB = "000" or functWB = "001" or functWB = "100")) or (opcodeWB = "0011" and functWB = "000") or (opcodeWB = "0101" and functWB = "000")) else -- (instruções add, sub, addi e lw)
         x"0008" when WBinst(76 downto 74) = IDinst(9 downto 7) and (opcodeWB = "0011" and (functWB = "001" or functWB = "011")) else -- (instruções ld e lui)
         x"0009" when WBinst(76 downto 74) = IDinst(9 downto 7) and opcodeWB = "0010" and functWB = "010" else -- (instrução mov)
         x"0010";
@@ -318,11 +318,12 @@ begin
     -- MEMORY  
     ramMem : RAM port map(
         clk => clk,
-        address => MEMinst(29 downto 23), -- r1 (apenas os últimos 7 bits)
+        address => MEMinst(33 downto 23), --ramAddress(11 downto 0), -- r1 (apenas os últimos 7 bits)
         wrEn => ramWrt,
         dataIn => MEMinst(57 downto 42), -- r0
         dataOut => ramOut
     );
+
     ramWrt <= '1' when opcodeMEM = "0010" and functMEM = "101" else -- sw
         '0';
     -- Só escreve em lw
@@ -336,7 +337,7 @@ begin
         dataIn => WBinstIN,
         dataOut => WBinst
     );
-    WBinstIN <= MEMinst(76 downto 23) & ulaRamSelect & MEMinst(6 downto 0); -- por enquanto não existe RAM
+    WBinstIN <= MEMinst(76 downto 23) & ulaRamSelect & MEMinst(6 downto 0);
     -- WRITE BACK     
     memtoReg <= "00" when opcodeWB = "0010" and functWB = "000" else -- add
         "00" when opcodeWB = "0010" and functWB = "001" else -- sub

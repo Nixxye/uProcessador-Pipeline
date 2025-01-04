@@ -5,7 +5,7 @@ use ieee.numeric_std.all;
 entity RAM is
    port( 
          clk      : in std_logic;
-         address : in unsigned(6 downto 0);
+         address : in unsigned(10 downto 0);
          wrEn    : in std_logic;
          dataIn  : in unsigned(15 downto 0);
          dataOut : out unsigned(15 downto 0) 
@@ -13,7 +13,7 @@ entity RAM is
 end entity;
 ------------------------------------------------------------------------
 architecture a_RAM of RAM is
-   type mem is array (0 to 1843) of unsigned(15 downto 0);
+   type mem is array (0 to 2047) of unsigned(15 downto 0);
    signal conteudo_RAM : mem;
 begin
    process(clk,wrEn)
@@ -24,5 +24,7 @@ begin
         end if;
       end if;
    end process;
+
    dataOut <= conteudo_RAM(to_integer(address));
+
 end architecture;

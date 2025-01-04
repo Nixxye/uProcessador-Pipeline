@@ -1,2 +1,3 @@
 # Ignorar todos os arquivos de waveform gerados
 *.ghw
+*.cf

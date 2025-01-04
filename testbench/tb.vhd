@@ -34,7 +34,7 @@ begin
 
     simTimeProc : process
     begin
-        wait for 500 us;
+        wait for 2258300 ns;
         finished <= '1';
         wait;
     end process simTimeProc;

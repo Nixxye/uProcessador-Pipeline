@@ -16,7 +16,7 @@ Para executar o projeto, você precisará de:
 Para compilar e simular o microprocessador, basta abrir o terminal no diretório do projeto e digitar `make`. 
 
 ## Descrição das Instruções:
-O microprocessador implementa três tipos principais de instruções: Tipo N (NOP), Tipo J (Jump), Tipo R (Registro), Tipo I (Imediato) e Tipo B (Branch). Abaixo, a descrição de cada tipo de instrução e seus campos:
+O microprocessador implementa 6 tipos principais de instruções: Tipo N (NOP), Tipo J (Jump), Tipo R (Registro), Tipo I (Imediato), Tipo B (Branch) e Tipo P (Auxiliares). Abaixo, a descrição de cada tipo de instrução e seus campos:
 ### Instruções de Tipo N
 | Instruções (N) | 18 downto 0 |
 | --- | --- |
@@ -75,7 +75,7 @@ As instruções do tipo B são usadas para saltos condicionais, baseados em comp
 * DELTA: Deslocamento para o endereço de destino (9 bits).
 * BLE: Salta se o valor de primeiro operando for menor ou igual ao de segundo na última comparação.
 * BLT: Salta se o valor de primeiro operando for menor do que o segundo na última comparação.
-### Instruções de Tipo B
+### Instruções de Tipo P
 As instruções do tipo P são utilizadas para operações auxiliares e simples, que envolvem apenas um único registrador como fonte e destino. Estas instruções são projetadas para facilitar manipulações rápidas e isoladas, como incrementos, sem a necessidade de operandos adicionais.
 | Instruções (P) | R0 (9 downto 7) | FUNCT (6 downto 4) | Opcode (3 downto 0) |
 | --- | --- | --- | --- |
@@ -83,7 +83,7 @@ As instruções do tipo P são utilizadas para operações auxiliares e simples,
 * Opcode: Código da operação (4 bits).
 * FUNCT: Função associada à operação (3 bits).
 * R0: Registrador envolvido na operação (3 bits).
-## Composição dos Registradores
+## Composição dos Registradores 
 
 ### IF/ID
 
